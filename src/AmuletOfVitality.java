@@ -17,9 +17,6 @@ public class AmuletOfVitality extends Item {
 		player.setCurrent_HP(player.getCurrent_HP()+80);
 	}
 		
-
-	
-
 	public String get_name(){
 		return "AmuletOfVitality";
 	}

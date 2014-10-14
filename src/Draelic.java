@@ -11,7 +11,6 @@ public class Draelic extends AggressiveMonster {
 	public Draelic(float xPos, float yPos)
 			throws SlickException {
 		super(xPos, yPos, DRAELIC_IMAGE_LOC,HP,damage,cooldown);
-		// TODO Auto-generated constructor stub
 	}
 
 	public String get_name(){

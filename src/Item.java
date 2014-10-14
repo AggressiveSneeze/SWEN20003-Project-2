@@ -5,8 +5,9 @@ public abstract class Item extends GameObject {
 
 	public Item(float xPos, float yPos, String image_loc) throws SlickException {
 		super(xPos, yPos, image_loc);
-		// TODO Auto-generated constructor stub
+		
 	}
+	
 	private boolean picked_up=false;
 	
 	

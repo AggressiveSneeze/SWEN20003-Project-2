@@ -11,8 +11,8 @@ public class Bandit extends AggressiveMonster {
 	public Bandit(float xPos, float yPos)
 			throws SlickException {
 		super(xPos, yPos, BANDIT_IMAGE_LOC,HP,damage,cooldown);
-		// TODO Auto-generated constructor stub
 	}
+	@Override
 	public String get_name(){
 		return "Bandit";
 	}

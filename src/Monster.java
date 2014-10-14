@@ -7,7 +7,6 @@ public abstract class Monster extends Unit {
 					int damage, int cooldown)
 			throws SlickException {
 		super(xPos, yPos, image_loc,max_HP,damage,cooldown);
-		// TODO Auto-generated constructor stub
 	}
 	
 	private boolean alive=true;
@@ -32,7 +31,6 @@ public abstract class Monster extends Unit {
 	}
 
 	public abstract void updateAI(Player player, int delta,World world);
-	//public abstract void updateInteractions(int delta, World world);
 	
 	public void update(World world,Player player,int delta) {
 		updateAI(player,delta,world);
@@ -40,9 +38,5 @@ public abstract class Monster extends Unit {
 		
 	
 	}
-	public void die() {
-		
-	}
-	
 
 } 

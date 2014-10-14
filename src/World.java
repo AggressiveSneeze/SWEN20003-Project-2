@@ -4,15 +4,13 @@
  */
 
 
-import java.io.File;
-import java.io.FileNotFoundException;
+
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Random;
-import java.util.Scanner;
 import java.util.Vector;
 
 import org.newdawn.slick.Graphics;
@@ -29,9 +27,14 @@ public class World
 	private TiledMap map;
 	private Camera cam;
 	private Player player;
-    static final private int layer_index=0;
-    static final private int tiles_across=13;
-    static final private int tiles_down=10;
+    static final private int LAYER_INDEX=0;
+    static final private int TILES_ACROSS=13;
+    static final private int TILES_DOWN=10;
+    static final private int INITIAL_MONSTER_COUNT=200;
+    static final private int INITIAL_VILLAGER_COUNT=5;
+    static final private int INITIAL_ITEM_COUNT=5;
+    static final private int PLAYER_START_X=756;
+    static final private int PLAYER_START_Y=640;
     
     //items
     private AmuletOfVitality amulet;
@@ -45,19 +48,12 @@ public class World
     //monsters
     private Draelic draelic;
     private String monster[];
+    //storage for items and villagers
+    Vector<Item> items = new Vector<Item>(INITIAL_ITEM_COUNT);
+    Vector<Villager> villagers = new Vector<Villager>(INITIAL_VILLAGER_COUNT);
+    Vector<Monster> monsters=new Vector<Monster>(INITIAL_MONSTER_COUNT);
     
-    Vector<Item> items = new Vector<Item>(5);
-    Vector<Villager> villagers = new Vector<Villager>(5);
-    
-    Vector<Zombie> zombies = new Vector<Zombie>(50);
-    Vector<GiantBat> bats= new Vector<GiantBat>(50);
-    Vector<Bandit> bandits = new Vector<Bandit>(50);
-    Vector<Skeleton> skeletons=new Vector<Skeleton>(50);
-    Vector<AggressiveMonster> aggressive_monsters=new Vector<AggressiveMonster>(200);
-    Vector<PassiveMonster> passive_monsters=new Vector<PassiveMonster>(200);
-    Vector<Monster> monsters=new Vector<Monster>(200);
-    
-    //Vector<Vector<Object>> renderables= new Vector<Vector<Object>>(15);
+    //temp storage for each monster
     private Zombie temp_zombie;
     private GiantBat temp_bat;
     private Bandit temp_bandit;
@@ -71,12 +67,11 @@ public class World
     throws SlickException, IOException
     {
     	map=new TiledMap("assets/map.tmx", "assets");
-    	// hero=new Image("assets/units/player.png");
+    	//make new player 
     	player= new Player(756,684);
+    	
     	//deal with items
     	amulet=new AmuletOfVitality(965,3563);
-    	//item in spawn spot
-    	//amulet=new AmuletOfVitality(900,684);
     	sword= new SwordOfStrength(4791,1253);
     	tome= new TomeOfAgility(546,6707);
     	elixir=new ElixirOfLife(1976,402);
@@ -97,8 +92,8 @@ public class World
     	List<String> lines = Files.readAllLines(Paths.get("assets/unitsloc.txt"), Charset.defaultCharset());
     	String monster_name;
     	int monster_xPos, monster_yPos;
-    	for(String potato:lines) {
-    		monster=potato.split(",");
+    	for(String line:lines) {
+    		monster=line.split(",");
     		monster[1]=monster[1].trim();
     		monster[2]=monster[2].trim();
     		monster_name=monster[0];
@@ -108,45 +103,39 @@ public class World
     		switch(monster_name) {
     		case " Bat":
     			temp_bat= new GiantBat(monster_xPos,monster_yPos);
-    			bats.addElement(temp_bat);
-    			passive_monsters.addElement(temp_bat);
+    			//bats.addElement(temp_bat);
+    			//passive_monsters.addElement(temp_bat);
     			monsters.addElement(temp_bat);
     			break;
     		case "Zombie":
     			temp_zombie=new Zombie(monster_xPos,monster_yPos);
-    			zombies.addElement(temp_zombie);
-    			aggressive_monsters.addElement(temp_zombie);
+    			//zombies.addElement(temp_zombie);
+    			//aggressive_monsters.addElement(temp_zombie);
     			monsters.addElement(temp_zombie);
     			break;
     		case "Bandit":
     			temp_bandit=new Bandit(monster_xPos,monster_yPos);
-    			bandits.addElement(temp_bandit);
-    			aggressive_monsters.addElement(temp_bandit);
+    			//bandits.addElement(temp_bandit);
+    			//aggressive_monsters.addElement(temp_bandit);
     			monsters.addElement(temp_bandit);
     			break;
     		case "Skeleton":
     			temp_skeleton=new Skeleton(monster_xPos,monster_yPos);
-    			skeletons.addElement(temp_skeleton);
-    			aggressive_monsters.addElement(temp_skeleton);
+    			//skeletons.addElement(temp_skeleton);
+    			//aggressive_monsters.addElement(temp_skeleton);
     			monsters.addElement(temp_skeleton);
     			break;
     		case "Drealic":
     			draelic=new Draelic(monster_xPos,monster_yPos);
-    			aggressive_monsters.addElement(draelic);
+    			//aggressive_monsters.addElement(draelic);
     			monsters.addElement(draelic);
     			System.out.println("Found a draelic!");
     			break;
     		}
     	}
-    	//renderables.addElement(monsters);
-    	//renderables.addElement(items);
-    	//renderables.addElement(villagers);
     	
-    	
-    		
+    	//initiate the camera 
     	cam=new Camera(player);
-    	
-        // TODO: Fill in
     }
 
     /** Update the game state for a frame.
@@ -170,11 +159,15 @@ public class World
     		float delta_y=player.getyPos()-monster.getyPos();
     		//updates the monster's movement.
         	monster.update(this, player,delta);
+
         	
-        	if((dir_A>0) && (Math.sqrt(delta_x*delta_x+delta_y*delta_y)<=50)) {
+        	if((dir_A>0) && (Math.sqrt(delta_x*delta_x+delta_y*delta_y)<=50) && monster.isAlive()) {
         			player.attack(monster);
         	}
+        	
         }
+        
+        //allows for picking up of items
         for(Item item: items) {
         	float delta_x=player.getxPos()-item.getxPos();
         	float delta_y=player.getyPos()-item.getyPos();
@@ -203,7 +196,7 @@ public class World
     	//pixels must be negative
     	//tiles must be positive
     	map.render(-cam.getMinX()%map.getTileWidth(),-cam.getMinY()%map.getTileHeight(), 
-    			cam.getMinX()/map.getTileWidth(),cam.getMinY()/map.getTileHeight(), tiles_across,tiles_down );
+    			cam.getMinX()/map.getTileWidth(),cam.getMinY()/map.getTileHeight(), TILES_ACROSS,TILES_DOWN );
     	//System.out.println(cam.getMinX() + " " + cam.getMinY());
     	//amulet.render(cam);
     	player.render(g);
@@ -218,9 +211,8 @@ public class World
     		if (on_map(item) && item.isPicked_up()==false) item.render(cam,g);
     	}
     	
-    	
-    	//Fix to show earlier, i.e when bottom hits 
-    	
+  
+    	//render panel 
     	UI.renderPanel(player,g);
   
     	/**prints some co-ordinate on map for debug purposes
@@ -239,10 +231,10 @@ public class World
    public boolean block(float xPos,float yPos) {
     	int tile_id;
     	String block;
-    	tile_id=map.getTileId((int)(xPos/map.getTileWidth()),(int)(yPos/map.getTileHeight()), layer_index);
+    	tile_id=map.getTileId((int)(xPos/map.getTileWidth()),(int)(yPos/map.getTileHeight()), LAYER_INDEX);
     	block=map.getTileProperty(tile_id, "block", "0");
     	if (block=="0") {
-    		//success or not blocked
+    		//not blocked
     		return false;
     	}
     	if (block=="1") {
@@ -251,16 +243,19 @@ public class World
     	}
     	return true;
     }
-   
+   /* method to see if an object is on the map and whether it needs to be rendered */
    private boolean on_map(GameObject object) {
-	   if (object.getxPos()<=cam.getMaxX() &&
-				object.getxPos()>=cam.getMinX() &&
-				object.getyPos()<=cam.getMaxY() &&
-				object.getyPos()>=cam.getMinY()) return true;
+	   double width=object.getImage().getWidth();
+	   double height=object.getImage().getHeight();
+	   
+	   if (object.getxPos()-width<=cam.getMaxX() &&
+				object.getxPos()+width>=cam.getMinX() &&
+				object.getyPos()-height<=cam.getMaxY() &&
+				object.getyPos()+height>=cam.getMinY()) return true;
 	   return false;
 	   
    }
-   
+   /* generates a random integer between min and max inclusive */
   public static int randInt(int min, int max, Random rand ) {
 
 	    // NOTE: Usually this should be a field rather than a method

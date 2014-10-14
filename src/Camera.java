@@ -42,8 +42,8 @@ public class Camera
     	this.screenwidth=RPG.screenwidth;
     	this.screenheight=RPG.screenheight-RPG.PANELHEIGHT;
     	//initial positions 
-    	this.xPos=756;
-    	this.yPos=684;
+    	this.xPos=(int)(unitFollow.getxPos());
+    	this.yPos=(int)(unitFollow.getyPos());
         //  Filled
     }
 

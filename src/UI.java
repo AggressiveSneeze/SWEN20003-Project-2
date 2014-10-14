@@ -137,7 +137,7 @@ public class UI {
     static public void Dialogue(float xPos, float yPos, String dialogue, Graphics g) {
     	int bar_x,bar_y,bar_width,bar_height;
     	int text_x,text_y;
-        bar_x = (int)(xPos-34);
+        bar_x = (int)(xPos-160);
         bar_y = (int)(yPos-65);
         //bar width = max{textwidth+6,70} as per the spec
         if (g.getFont().getWidth(dialogue)+6 > 70) {

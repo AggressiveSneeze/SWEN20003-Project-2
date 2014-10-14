@@ -8,12 +8,11 @@ public class ElixirOfLife extends Item {
 	public ElixirOfLife(float xPos, float yPos)
 			throws SlickException {
 		super(xPos, yPos, ELIXIR_IMAGE_LOC);
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
 	public void pickUp(Player player) {
-		// TODO Auto-generated method stub
+		// Nothing needed to be done
 
 	}
 	

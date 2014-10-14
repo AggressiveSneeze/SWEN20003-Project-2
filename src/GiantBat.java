@@ -11,7 +11,6 @@ public class GiantBat extends PassiveMonster {
 			throws SlickException {
 		super(xPos, yPos, BAT_IMAGE_LOC,HP,
 					damage,cooldown);
-		// TODO Auto-generated constructor stub
 	}
 	
 	public String get_name(){

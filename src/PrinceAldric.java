@@ -6,7 +6,8 @@ public class PrinceAldric extends Villager {
 	private static final String PRINCE_IMAGE_LOC="assets/units/prince.png";
 	private static final String had_elixir = "The elixir! My father is cured! Thankyou!";
 	private static final String no_elixir = "Please seek out the Elixir of Life to cure the king.";
-	private static final String given_elixir= "You gave me the elixir already. I no longer need you, baby";
+	private static final String given_elixir= "You gave me the elixir already. I no longer need you, child";
+	
 	public PrinceAldric(float xPos, float yPos)
 			throws SlickException {
 		super(xPos, yPos, PRINCE_IMAGE_LOC);
@@ -23,9 +24,10 @@ public class PrinceAldric extends Villager {
 		    if (item.get_name().equals("ElixirOfLife")) {
 		    	elixir_flag=true;
 		    	did_have_elixir=true;
+		    	//takes the elixir from the player
 		    	player.getInventory().remove(i);
 		    	
-		    	//remove
+		    	
 		    }
 		    
 		}

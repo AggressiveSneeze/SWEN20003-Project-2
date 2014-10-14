@@ -11,7 +11,6 @@ public class Garth extends Villager {
 
 	public Garth(float xPos, float yPos) throws SlickException {
 		super(xPos, yPos, GARTH_IMAGE_LOC);
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
@@ -20,7 +19,6 @@ public class Garth extends Villager {
 		
 		for (Item item : player.getInventory()) {
 			if (item.get_name().equals("AmuletOfVitality")) amulet_flag=true;
-			//if (item.get_name().equals("ElixirOfLife")) elixir_flag=true;
 			if (item.get_name().equals("SwordOfStrength")) sword_flag=true;
 			if (item.get_name().equals("TomeofAgility")) tome_flag=true;
 		}
@@ -38,10 +36,6 @@ public class Garth extends Villager {
 		}
 		setCurrent_dialogue(has_treasures);
 		
-		
-		
-		
-		// TODO Auto-generated method stub
 
 	}
 	

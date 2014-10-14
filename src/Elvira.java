@@ -24,15 +24,13 @@ public class Elvira extends Villager {
 			player.setCurrent_HP(player.getMax_HP());
 			setCurrent_dialogue(dialogue2);
 		
-		//print dialogue2
+		//set dialogue2 to be the dialogue to be printed
 		
 		}
 		else {
 			setCurrent_dialogue(dialogue1);
-		//print other dialogue1
+		//sets dialogue1
 		}
-		// TODO Auto-generated method stub
-
 	}
 	public String get_name(){
 		return "Elvira";

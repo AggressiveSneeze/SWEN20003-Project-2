@@ -1,3 +1,5 @@
+import java.util.Random;
+
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
@@ -6,10 +8,27 @@ import org.newdawn.slick.SlickException;
 public abstract class Unit extends GameObject {
 	
 	private int current_HP, max_HP, damage, cooldown;
-	private float speed, cooldown_remaining=0;
+	private float cooldown_remaining=0;
+	private boolean being_attacked=false;
+	private int attacked_counter=3000;
+	Random rand=new Random();
 	
-	public float health_percentage() {
-		return (1.0f*current_HP/max_HP);
+	//getters and setters
+	public int getAttacked_counter() {
+		return attacked_counter;
+	}
+
+	public void setAttacked_counter(int attacked_counter) {
+		this.attacked_counter = attacked_counter;
+	}
+	
+	
+	public boolean isBeing_attacked() {
+		return being_attacked;
+	}
+
+	public void setBeing_attacked(boolean being_attacked) {
+		this.being_attacked = being_attacked;
 	}
 	
 	public int getCurrent_HP() {
@@ -51,8 +70,10 @@ public abstract class Unit extends GameObject {
 	public void setCooldown_remaining(float cooldown_remaining) {
 		this.cooldown_remaining = cooldown_remaining;
 	}
-
-	public abstract void die();
+	
+	public float health_percentage() {
+		return (1.0f*current_HP/max_HP);
+	}
 	
 	/**still need to implement **/
 	public void move_to(float new_xPos, float new_yPos, World world) {
@@ -74,6 +95,19 @@ public abstract class Unit extends GameObject {
 		UI.HPBar(RPG.screenwidth-(camera.getMaxX()-this.xPos),
 				(RPG.screenheight-RPG.PANELHEIGHT)-(camera.getMaxY()-this.yPos), 
 				this.health_percentage(), this.get_name(), g);
+	}
+	
+	public void attack(Unit unit) {
+		
+		if (this.getCooldown_remaining()==0) {
+			int current_hp=unit.getCurrent_HP();
+			int new_hp=current_hp-World.randInt(0,this.getDamage(), rand);
+			unit.setCurrent_HP(new_hp);
+			unit.setBeing_attacked(true);
+			unit.setAttacked_counter(0);
+			this.setCooldown_remaining(this.getCooldown());
+		}
+		//TODO
 	}
 
 }

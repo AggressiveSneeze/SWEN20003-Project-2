@@ -4,13 +4,12 @@ import org.newdawn.slick.SlickException;
 
 
 public abstract class PassiveMonster extends Monster {
-	static Random rand = new Random();
-	int movement_counter=0;
-	int direction= World.randInt(0,8,rand);
-	float speed=0.2f;
-	int dir_y,dir_x;
-	float new_x_pos=getxPos();
-	float new_y_pos=getyPos();
+	private static Random rand = new Random();
+	private int movement_counter=0;
+	private int direction= World.randInt(0,8,rand);
+	private float speed=0.2f;
+	private float new_x_pos;
+	private float new_y_pos;
 
 	public PassiveMonster(float xPos, float yPos, String image_loc,
 			int max_HP, int damage, int cooldown)
@@ -19,11 +18,9 @@ public abstract class PassiveMonster extends Monster {
 		// TODO Auto-generated constructor stub
 	}
 	
-	public void die() {
-	}
-
 	@Override
 	public void updateAI(Player player, int delta, World world) {
+		/* if monster hasn't been attacked, behave as required */
 		if(this.getAttacked_counter()>=5000) updateInteractions(delta,world);
 		else {
 			float delta_x=player.getxPos()-this.getxPos();
@@ -33,19 +30,14 @@ public abstract class PassiveMonster extends Monster {
 			float d_y=(float) (delta*delta_y*speed/distance);
 			new_x_pos=this.getxPos()-d_x;
 			new_y_pos=this.getyPos()-d_y;
-			if (world.block(new_x_pos,new_y_pos)==false && getCurrent_HP()>0) {
-				setxPos(new_x_pos);
-				setyPos(new_y_pos);
+			if(getCurrent_HP()>0){
+				if(world.block(new_x_pos, this.getyPos())==false) {
+					xPos=new_x_pos;
+				}
+				if(world.block(this.getxPos(),new_y_pos)==false) {
+					yPos=new_y_pos;
+				}
 			}
-//			
-//			dir_y=(int)(player.getChange_y());
-//			dir_x=(int)(player.getChange_x());
-//			if (dir_x!=0) new_x_pos=getxPos()+delta*speed*(dir_x/Math.abs(dir_x));
-//			else new_x_pos=0;
-//			if (dir_y!=0) new_y_pos=getyPos()+delta*speed*(dir_y/Math.abs(dir_y));
-//			else new_y_pos=0;
-//			
-		
 			this.setAttacked_counter(this.getAttacked_counter()+delta);
 			
 			
@@ -111,7 +103,9 @@ public abstract class PassiveMonster extends Monster {
 				setxPos(new_x_pos);
 				setyPos(new_y_pos);
 			}
-			
+			/* if the monster is walking into a blocked tile in its current orientation,
+			 * make it turn around.
+			 */
 			if (world.block(new_x_pos,new_y_pos)==true) {
 				switch (direction) {
 				case 1:
@@ -140,11 +134,7 @@ public abstract class PassiveMonster extends Monster {
 					break; 		
 				}
 			}
-			movement_counter=movement_counter+delta;
-			// TODO Auto-generated method stub
-
-		
-		// TODO Auto-generated method stub
+			movement_counter+=delta;
 
 	}
 
